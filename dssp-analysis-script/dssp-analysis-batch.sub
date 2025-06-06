@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+#SBATCH --job-name=dssp-mdtraj
+#SBATCH -e slurm-%j.out
+#SBATCH -o slurm-%j.out
+#SBATCH --ntasks-per-node=1        ## Number of tasks per node
+#SBATCH --cpus-per-task=1          ## Number of cpus used per task
+#SBATCH --nodes=1                  ## Number of nodes to be used
+#SBATCH -p short.36
+#SBATCH --time=12:00:00
+#
+
+# Need to change the two filenames for different mutants
+PDB_file="../hGS_2HGS_Amber99sb-ILDN_TIP3P.only-protein.pdb"
+# You should include this with the part*, then it should pick up all the 
+# xtc files and do them in the right order
+Traj_files="../hGS_2HGS_NPT_300K.part*.only-protein.xtc"
+# No need to change the stride 
+stride=1
+
+residue_set="
+a-thr3 a-asn4
+b-thr3 b-asn4
+"
+
+chains="a b"
+
+echo "DSSP Full"
+echo "Start: $(date)"
+./dssp-analysis.py \
+	             --pdb-file ${PDB_file} \
+		     --trajectory-files ${Traj_files} \
+		     --stride ${stride} \
+		     --residue-set ${residue_set} \
+		     --output-chains ${chains} \
+		     --output-file dssp.data
+echo "End: $(date)"
+echo " "
+
+echo "DSSP Simplifed"
+echo "Start: $(date)"
+./dssp-analysis.py \
+                     --pdb-file ${PDB_file} \
+                     --trajectory-files ${Traj_files} \
+                     --stride ${stride} \
+		     --residue-set ${residue_set} \
+		     --output-chains ${chains} \
+		     --simplifed \
+                     --output-file dssp.simplifed.data
+echo "End: $(date)"
+echo " "
+
+
+
