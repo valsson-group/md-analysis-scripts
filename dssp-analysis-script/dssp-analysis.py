@@ -1,4 +1,4 @@
-#! /usr/bin/env python3.11
+#! /usr/bin/env python 
 
 import mdtraj as md
 import numpy as np
@@ -78,7 +78,7 @@ counter=0
 for trj in traj_files:
     start_time_loop = time.perf_counter() 
     counter+=1
-    print(" {0:02d}/{1:02d}: {2:s}".format(counter,number_of_traj_files,trj))
+    print(" {0:02d}/{1:02d}: {2:s}".format(counter,number_of_traj_files,trj), flush=True)
 
     traj = md.load_xtc(trj, 
                        pdb_file,
@@ -132,6 +132,7 @@ for trj in traj_files:
                    header=header_time + " ".join(res) + "\n"+AssignmentCodes,
                    comments="",
                    fmt="%s")
+        f.flush()
 
     if args.residue_set:
         np.savetxt(f_dssp_residue_set,
@@ -139,8 +140,9 @@ for trj in traj_files:
                    header=header_time + " ".join(residue_set_str) + "\n"+AssignmentCodes,
                    comments="",
                    fmt="%s")
+        f_dssp_residue_set.flush()
     end_time_loop = time.perf_counter() 
-    print(" - Elapsed time: {:0.1f} seconds".format(end_time_loop-start_time_loop))
+    print(" - Elapsed time: {:0.1f} seconds".format(end_time_loop-start_time_loop), flush=True)
 
 for f in f_dssp:
     f.close()
